@@ -30,11 +30,49 @@ train <- sample(nrow(df), 0.7*nrow(df))
 df.train <- df[train,]
 df.validate <- df[-train,]
 table(df.train$winOrloss)
+# win loss 
+# 2443 2422 
 table(df.validate$winOrloss)
+# win loss 
+# 1032 1053 
 
 # Listing 17.2 - Logistic regression with glm()
 fit.logit <- glm(winOrloss~., data=df.train, family=binomial())
 summary(fit.logit)
+##############################################################################################
+# Call:
+#   glm(formula = winOrloss ~ ., family = binomial(), data = df.train)
+# 
+# Deviance Residuals: 
+#   Min       1Q   Median       3Q      Max  
+# -2.0658  -1.0863  -0.5907   1.0797   2.0736  
+# 
+# Coefficients:
+#   Estimate Std. Error z value Pr(>|z|)    
+# (Intercept)  0.307633   0.160909   1.912 0.055897 .  
+# hOrA        -0.414391   0.060146  -6.890 5.59e-12 ***
+#   inning      -0.232867   0.098284  -2.369 0.017821 *  
+#   tajasu       0.214432   0.054491   3.935 8.31e-05 ***
+#   tugusu      -0.000244   0.003561  -0.069 0.945372    
+# tasu        -0.160913   0.047018  -3.422 0.000621 ***
+#   anta         0.013630   0.033197   0.411 0.681376    
+# fourball    -0.181790   0.057509  -3.161 0.001572 ** 
+#   homerun      0.083115   0.044310   1.876 0.060690 .  
+# samjin      -0.009144   0.016582  -0.551 0.581337    
+# siljum       0.130653   0.049832   2.622 0.008744 ** 
+#   jacheck     -0.041126   0.048831  -0.842 0.399676    
+# score       -0.096739   0.008490 -11.395  < 2e-16 ***
+#   ---
+#   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# (Dispersion parameter for binomial family taken to be 1)
+# 
+# Null deviance: 6744.2  on 4864  degrees of freedom
+# Residual deviance: 6326.0  on 4852  degrees of freedom
+# AIC: 6352
+# 
+# Number of Fisher Scoring iterations: 4
+##############################################################################################
 prob <- predict(fit.logit, df.validate, type="response")
 logit.pred <- factor(prob > .5, levels=c(FALSE, TRUE), 
                      labels=c("win", "loss"))
@@ -42,6 +80,11 @@ logit.perf <- table(df.validate$winOrloss, logit.pred,
                     dnn=c("Actual", "Predicted"))
 logit.perf
 #prob
+#     Predicted
+# Actual win loss
+#  win  686  346
+#  loss 359  694
+##############################################################################################
 
 # Listing 17.3 - Creating a classical decision tree with rpart()
 library(rpart)
